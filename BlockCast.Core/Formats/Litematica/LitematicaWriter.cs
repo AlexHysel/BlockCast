@@ -30,23 +30,30 @@ public class LitematicaWriter
 
         var regions = new CompoundTag("Regions");
 
-        int size = 5 * 5 * 5;
-        int paletteSize = 2;
-        int bitsPerEntry = (int) Math.Max(2, Math.Ceiling(Math.Log2(paletteSize)));
-        int blocksPerLong = 64 / bitsPerEntry;
-        var arraySize = (int) Math.Ceiling((float) size / blocksPerLong);
-
-        long[] blockStates = new long[arraySize];
-
-        for (int i = 0; i < size; i++)
-        {
-            int longIndex = i / blocksPerLong;
-            int bitShift = i % blocksPerLong * bitsPerEntry;
-            blockStates[longIndex] |= 1L << bitShift;
-        }
-
         foreach (var r in scene.Regions)
         {
+            var palette = r.GetPalette();
+            int sX = r.Blocks.GetLength(0);
+            int sY = r.Blocks.GetLength(1);
+            int sZ = r.Blocks.GetLength(2);
+            int size = sX * sY * sZ;
+            int paletteSize = palette.Count;
+            int bitsPerEntry = (int) Math.Max(2, Math.Ceiling(Math.Log2(paletteSize)));
+            int blocksPerLong = 64 / bitsPerEntry;
+            var arraySize = (int) Math.Ceiling((float) size / blocksPerLong);
+            long[] blockStates = new long[arraySize];
+            int i = 0;
+
+            for (int x = 0; x < sX; x++)
+                for (int y = 0; y < sY; y++)
+                    for (int z = 0; z < sZ; z++)
+                    {
+                        Block block = r.Blocks[x, y, z];
+                        int longIndex = i / blocksPerLong;
+                        int bitShift = i % blocksPerLong * bitsPerEntry;
+                        blockStates[longIndex] |= (long) palette.FindIndex(b => b == block) << bitShift;
+                        i++;
+                    }
             var region = new CompoundTag(r.Name)
             {
                 new CompoundTag("Position")
@@ -57,11 +64,11 @@ public class LitematicaWriter
                 },
                 new CompoundTag("Size")
                 {
-                    new IntTag("x", 5),
-                    new IntTag("y", 5),
-                    new IntTag("z", 5)
+                    new IntTag("x", sX),
+                    new IntTag("y", sY),
+                    new IntTag("z", sZ)
                 },
-                CreatePalette(r),
+                CreatePaletteTag(palette),
                 new LongArrayTag("BlockStates", blockStates),
                 new ListTag("TileEntities", TagType.Compound),
                 new ListTag("Entities", TagType.Compound),
@@ -79,16 +86,16 @@ public class LitematicaWriter
         writer.WriteTag(root);
     }
 
-    private static ListTag CreatePalette(BlockRegion region)
+    private static ListTag CreatePaletteTag(List<Block> palette)
     {
-        ListTag palette = new ListTag("BlockStatePalette", TagType.Compound);
-        foreach (Block block in region.GetPalette())
+        ListTag tag = new ListTag("BlockStatePalette", TagType.Compound);
+        foreach (Block block in palette)
         {
-            palette.Add(new CompoundTag(null)
+            tag.Add(new CompoundTag(null)
             {
                 new StringTag("Name", block.Name)
             });
         }
-        return palette;
+        return tag;
     }
 }
