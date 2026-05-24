@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.IO.Compression;
 using BlockCast.Core.Models;
 using SharpNBT;
@@ -21,37 +22,34 @@ public class LitematicaWriter
             new IntTag("RegionCount", 1),
             new CompoundTag("EnclosingSize")
             {
-                new IntTag("x", 5),
-                new IntTag("y", 5),
-                new IntTag("z", 5)
+                new IntTag("x", scene.MaxX - scene.MinX),
+                new IntTag("y", scene.MaxY - scene.MinY),
+                new IntTag("z", scene.MaxZ - scene.MinZ)
             }
         };
         root.Add(metadata);
 
         var regions = new CompoundTag("Regions");
-
+        
         foreach (var r in scene.Regions)
         {
             var palette = r.GetPalette();
-            int sX = r.Blocks.GetLength(0);
-            int sY = r.Blocks.GetLength(1);
-            int sZ = r.Blocks.GetLength(2);
-            int size = sX * sY * sZ;
-            int paletteSize = palette.Count;
-            int bitsPerEntry = (int) Math.Max(2, Math.Ceiling(Math.Log2(paletteSize)));
+            Console.WriteLine($"Region {r.Name} palette size: {palette.Count}");
+            int bitsPerEntry = (int) Math.Max(2, Math.Ceiling(Math.Log2(palette.Count)));
             int blocksPerLong = 64 / bitsPerEntry;
-            var arraySize = (int) Math.Ceiling((float) size / blocksPerLong);
+            var arraySize = (int) Math.Ceiling((float) (scene.MaxX - scene.MinX) * (scene.MaxY - scene.MinY) * (scene.MaxZ - scene.MinZ) / blocksPerLong);
             long[] blockStates = new long[arraySize];
             int i = 0;
 
-            for (int x = 0; x < sX; x++)
-                for (int y = 0; y < sY; y++)
-                    for (int z = 0; z < sZ; z++)
+            
+            for (int y = scene.MinY; y < scene.MaxY; y++)
+                for (int z = scene.MinZ; z < scene.MaxZ; z++)
+                    for (int x = scene.MinX; x < scene.MaxX; x++)
                     {
-                        Block? block = r.Blocks[x, y, z] ?? new Block("minecraft:air");
+                        Block? block = r.GetBlock(x, y, z);
                         int longIndex = i / blocksPerLong;
                         int bitShift = i % blocksPerLong * bitsPerEntry;
-                        int paletteIndex = palette.FindIndex(b => b != null && b.Name == block.Name);
+                        int paletteIndex = palette.FindIndex(b => b.Name == block.Name);
                         if (paletteIndex == -1) paletteIndex = 0;
                         blockStates[longIndex] |= (long) paletteIndex << bitShift;
                         i++;
@@ -66,9 +64,9 @@ public class LitematicaWriter
                 },
                 new CompoundTag("Size")
                 {
-                    new IntTag("x", sX),
-                    new IntTag("y", sY),
-                    new IntTag("z", sZ)
+                    new IntTag("x", scene.MaxX - scene.MinX),
+                    new IntTag("y", scene.MaxY - scene.MinY),
+                    new IntTag("z", scene.MaxZ - scene.MinZ)
                 },
                 CreatePaletteTag(palette),
                 new LongArrayTag("BlockStates", blockStates),

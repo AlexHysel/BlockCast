@@ -1,21 +1,19 @@
 namespace BlockCast.Core.Models;
 
-public class BlockRegion(string name, int x, int y, int z, Block[,,] blocks)
+public class BlockRegion(string name, int x, int y, int z)
 {
     public string Name {get; set; } = name;
     public int X { get; set; } = x;
     public int Y { get; set; } = y;
     public int Z { get; set; } = z;
-    public Block[,,] Blocks { get; set; } = blocks;
+    public Dictionary<(int, int, int), Block> Blocks { get; set; } = [];
     public List<Block> GetPalette()
     {
-        var set = new HashSet<Block>();
-        foreach (var block in Blocks)
-            if (block != null)
-                set.Add(block);
-
-        var palette = new List<Block> { new("minecraft:air") };
-        palette.AddRange(set.Where(b => b != new Block("minecraft:air")));
-        return palette;
+        HashSet<Block> palette = [new Block("minecraft:air"), .. Blocks.Values];
+        return [.. palette];
+    }
+    public Block GetBlock(int x, int y, int z)
+    {
+        return Blocks.TryGetValue((x, y, z), out var block) ? block : new Block("minecraft:air");
     }
 }

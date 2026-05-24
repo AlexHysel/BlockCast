@@ -8,12 +8,13 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
     public override BlockScene Voxelize(Mesh mesh)
     {
         BlockScene blockScene = new("Main", "Me");
-        Block[,,] blocks = new Block[100, 100, 100];
+        BlockRegion region = new("Main", 0, 0, 0);
+
         foreach (var triangle in mesh.Faces)
         {
-            Vector3 a = mesh.Vertices[triangle.A];
-            Vector3 b = mesh.Vertices[triangle.B];
-            Vector3 c = mesh.Vertices[triangle.C];
+            Vector3 a = mesh.GetVertex(triangle.A);
+            Vector3 b = mesh.GetVertex(triangle.B);
+            Vector3 c = mesh.GetVertex(triangle.C);
 
             Vector3 normal = Vector3.Normalize(Vector3.Cross(b - a, c - a));
             float d = -Vector3.Dot(normal, a);
@@ -121,16 +122,11 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                             blockZ = (int)Math.Floor(depth);
                         }
 
-                        if (blockX >= 0 && blockX < 100 &&
-                            blockY >= 0 && blockY < 100 &&
-                            blockZ >= 0 && blockZ < 100)
-                        {
-                            blocks[blockX, blockY, blockZ] = new Block("minecraft:stone");
-                        }
+                        region.Blocks[(blockX, blockY, blockZ)] = new Block("minecraft:stone");
                     }
                 }
         }
-        blockScene.AddRegion(new BlockRegion("Main", 0, 0, 0, blocks));
+        blockScene.AddRegion(region);
         return blockScene;
     }
 
