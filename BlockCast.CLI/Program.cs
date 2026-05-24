@@ -1,5 +1,6 @@
 ﻿using BlockCast.Core.Formats.Litematica;
 using BlockCast.Core.Models;
+using BlockCast.Core.Parsers;
 
 Block stone = new("minecraft:stone");
 Block dirt = new("minecraft:dirt");
@@ -24,3 +25,14 @@ BlockScene scene = new("Scene", "Somebody");
 scene.AddRegion(region);
 
 LitematicaWriter.WriteToFile("t.litematic", scene);
+
+string obj = File.ReadAllText("untitled.obj");
+Mesh mesh = OBJParser.Parse(obj);
+
+Console.WriteLine("Verices:");
+foreach(var v in mesh.Vertices)
+    Console.WriteLine($"{v.X}, {v.Y}, {v.Z}");
+
+Console.WriteLine("Normals:");
+foreach(var n in mesh.Normals)
+    Console.WriteLine($"{n.A}, {n.B}, {n.C}");
