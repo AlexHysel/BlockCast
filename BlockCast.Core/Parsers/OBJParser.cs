@@ -17,7 +17,7 @@ public class OBJParser
             }
             else if (line.StartsWith("f "))
             {
-                int[] values = [.. line.Split(' ').Skip(1).Select(str => int.Parse(str.Split('/')[0]))];
+                int[] values = [.. line.Split(' ').Skip(1).Select(str => int.Parse(str.Split('/')[0]) - 1)];
                 mesh.Normals.Add(new Triangle(values));
             }
         }
