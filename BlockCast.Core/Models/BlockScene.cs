@@ -17,11 +17,11 @@ public class BlockScene(string name, string author)
     public void AddRegion(BlockRegion region)
     {
         Regions.Add(region);
-        MaxX = Math.Max(MaxX, region.X + region.Blocks.Max(b => b.Key.Item1) + 1);
-        MaxY = Math.Max(MaxY, region.Y + region.Blocks.Max(b => b.Key.Item2) + 1);
-        MaxZ = Math.Max(MaxZ, region.Z + region.Blocks.Max(b => b.Key.Item3) + 1);
-        MinX = Math.Min(MinX, region.X + region.Blocks.Min(b => b.Key.Item1));
-        MinY = Math.Min(MinY, region.Y + region.Blocks.Min(b => b.Key.Item2));
-        MinZ = Math.Min(MinZ, region.Z + region.Blocks.Min(b => b.Key.Item3));
+        MaxX = Math.Max(MaxX, region.PosX + region.SizeX);
+        MaxY = Math.Max(MaxY, region.PosY + region.SizeY);
+        MaxZ = Math.Max(MaxZ, region.PosZ + region.SizeZ);
+        MinX = Math.Min(MinX, region.PosX);
+        MinY = Math.Min(MinY, region.PosY);
+        MinZ = Math.Min(MinZ, region.PosZ);
     }
 }
