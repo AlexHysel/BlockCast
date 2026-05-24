@@ -11,7 +11,8 @@ public class BlockRegion(string name, int x, int y, int z, Block[,,] blocks)
     {
         var set = new HashSet<Block>();
         foreach (var block in Blocks)
-            set.Add(block);
+            if (block != null)
+                set.Add(block);
 
         var palette = new List<Block> { new("minecraft:air") };
         palette.AddRange(set.Where(b => b != new Block("minecraft:air")));

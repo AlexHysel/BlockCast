@@ -5,7 +5,7 @@ namespace BlockCast.Core.Models;
 public class Mesh
 {
     public List<Vector3> Vertices { get; set; } = [];
-    public List<Triangle> Normals { get; set; } = [];
+    public List<Triangle> Faces { get; set; } = [];
 }
 
 public record Triangle

@@ -22,7 +22,7 @@ public class OBJParser
                     .Skip(1).Select(str => int.Parse(str.Split('/')[0]) - 1)
                 ];
                 for (int i = 0; i < values.Length - 2; i++)
-                    mesh.Normals.Add(new Triangle(values[0], values[i + 1], values[i + 2]));
+                    mesh.Faces.Add(new Triangle(values[0], values[i + 1], values[i + 2]));
             }
         }
         return mesh;

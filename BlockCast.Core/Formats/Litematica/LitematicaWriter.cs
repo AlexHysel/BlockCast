@@ -48,10 +48,12 @@ public class LitematicaWriter
                 for (int y = 0; y < sY; y++)
                     for (int z = 0; z < sZ; z++)
                     {
-                        Block block = r.Blocks[x, y, z];
+                        Block? block = r.Blocks[x, y, z] ?? new Block("minecraft:air");
                         int longIndex = i / blocksPerLong;
                         int bitShift = i % blocksPerLong * bitsPerEntry;
-                        blockStates[longIndex] |= (long) palette.FindIndex(b => b == block) << bitShift;
+                        int paletteIndex = palette.FindIndex(b => b != null && b.Name == block.Name);
+                        if (paletteIndex == -1) paletteIndex = 0;
+                        blockStates[longIndex] |= (long) paletteIndex << bitShift;
                         i++;
                     }
             var region = new CompoundTag(r.Name)
