@@ -1,3 +1,5 @@
 <Solution>
   <Project Path="BlockCast.CLI/BlockCast.CLI.csproj" />
+  <Project Path="BlockCast.Core/BlockCast.Core.csproj" />
+  <Project Path="BlockCast.Tests/BlockCast.Tests.csproj" />
 </Solution>
