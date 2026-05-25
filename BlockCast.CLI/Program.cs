@@ -3,17 +3,46 @@ using BlockCast.Core.Models;
 using BlockCast.Core.Parsers;
 using BlockCast.Core.Voxelization;
 
+PrintHeader();
 var voxelizer = new DominantAxisCpuVoxelizer(new VoxelizerOptions());
 
 string obj = File.ReadAllText("untitled.obj");
 
-Console.WriteLine("Parsing OBJ...");
+Console.Write("Parsing OBJ... ");
 Mesh mesh = OBJParser.Parse(obj);
-Console.WriteLine($"Faces: {mesh.Faces.Count}");
-Console.WriteLine($"Size: {mesh.Size}, {mesh.Min} to {mesh.Max}");
+PrintDone();
 
 Console.WriteLine("Voxelizing...");
 BlockScene scene = voxelizer.Voxelize(mesh);
+PrintDone();
 
 Console.WriteLine("Writing Litematica file...");
 LitematicaWriter.WriteToFile("t.litematic", scene);
+PrintDone();
+
+static void PrintDone()
+{
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("Done.");
+    Console.ForegroundColor = ConsoleColor.White;
+}
+
+static void PrintHeader()
+{
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("""
+
+    /$$$$$$$  /$$                     /$$        /$$$$$$                        /$$    
+    | $$__  $$| $$                    | $$       /$$__  $$                      | $$    
+    | $$  \ $$| $$  /$$$$$$   /$$$$$$$| $$   /$$| $$  \__/  /$$$$$$   /$$$$$$$ /$$$$$$  
+    | $$$$$$$ | $$ /$$__  $$ /$$_____/| $$  /$$/| $$       |____  $$ /$$_____/|_  $$_/  
+    | $$__  $$| $$| $$  \ $$| $$      | $$$$$$/ | $$        /$$$$$$$|  $$$$$$   | $$    
+    | $$  \ $$| $$| $$  | $$| $$      | $$_  $$ | $$    $$ /$$__  $$ \____  $$  | $$ /$$
+    | $$$$$$$/| $$|  $$$$$$/|  $$$$$$$| $$ \  $$|  $$$$$$/|  $$$$$$$ /$$$$$$$/  |  $$$$/
+    |_______/ |__/ \______/  \_______/|__/  \__/ \______/  \_______/|_______/    \___/  
+
+                                                                        by AlexHysel
+
+    """);
+    Console.ForegroundColor = ConsoleColor.White;
+}
