@@ -12,12 +12,12 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
 
         foreach (var triangle in mesh.Faces)
         {
-            Vector3 a = mesh.GetVertex(triangle.A) - mesh.Min;
-            Vector3 b = mesh.GetVertex(triangle.B) - mesh.Min;
-            Vector3 c = mesh.GetVertex(triangle.C) - mesh.Min;
+            Vector3 vertexA = mesh.GetVertex(triangle.A) - mesh.Min;
+            Vector3 vertexB = mesh.GetVertex(triangle.B) - mesh.Min;
+            Vector3 vertexC = mesh.GetVertex(triangle.C) - mesh.Min;
 
-            Vector3 normal = Vector3.Normalize(Vector3.Cross(b - a, c - a));
-            float d = -Vector3.Dot(normal, a);
+            Vector3 normal = Vector3.Normalize(Vector3.Cross(vertexB - vertexA, vertexC - vertexA));
+            float d = -Vector3.Dot(normal, vertexA);
             float absX = Math.Abs(normal.X);
             float absY = Math.Abs(normal.Y);
             float absZ = Math.Abs(normal.Z);
@@ -32,54 +32,54 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                 dominantAxis = 'X';
 
                 // Width = Z, Height = Y, Depth = X
-                minWidth = Math.Min(a.Z, Math.Min(b.Z, c.Z));
-                maxWidth = Math.Max(a.Z, Math.Max(b.Z, c.Z));
-                
-                minHeight = Math.Min(a.Y, Math.Min(b.Y, c.Y));
-                maxHeight = Math.Max(a.Y, Math.Max(b.Y, c.Y));
-                
-                minDepth = Math.Min(a.X, Math.Min(b.X, c.X));
-                maxDepth = Math.Max(a.X, Math.Max(b.X, c.X));
+                minWidth = Math.Min(vertexA.Z, Math.Min(vertexB.Z, vertexC.Z));
+                maxWidth = Math.Max(vertexA.Z, Math.Max(vertexB.Z, vertexC.Z));
 
-                aW = a.Z; aH = a.Y;
-                bW = b.Z; bH = b.Y;
-                cW = c.Z; cH = c.Y;
+                minHeight = Math.Min(vertexA.Y, Math.Min(vertexB.Y, vertexC.Y));
+                maxHeight = Math.Max(vertexA.Y, Math.Max(vertexB.Y, vertexC.Y));
+
+                minDepth = Math.Min(vertexA.X, Math.Min(vertexB.X, vertexC.X));
+                maxDepth = Math.Max(vertexA.X, Math.Max(vertexB.X, vertexC.X));
+
+                aW = vertexA.Z; aH = vertexA.Y;
+                bW = vertexB.Z; bH = vertexB.Y;
+                cW = vertexC.Z; cH = vertexC.Y;
             }
             else if (absY >= absX && absY >= absZ) // Y
             {
                 dominantAxis = 'Y';
 
                 // Width = X, Height = Z, Depth = Y
-                minWidth = Math.Min(a.X, Math.Min(b.X, c.X));
-                maxWidth = Math.Max(a.X, Math.Max(b.X, c.X));
+                minWidth = Math.Min(vertexA.X, Math.Min(vertexB.X, vertexC.X));
+                maxWidth = Math.Max(vertexA.X, Math.Max(vertexB.X, vertexC.X));
                 
-                minHeight = Math.Min(a.Z, Math.Min(b.Z, c.Z));
-                maxHeight = Math.Max(a.Z, Math.Max(b.Z, c.Z));
+                minHeight = Math.Min(vertexA.Z, Math.Min(vertexB.Z, vertexC.Z));
+                maxHeight = Math.Max(vertexA.Z, Math.Max(vertexB.Z, vertexC.Z));
                 
-                minDepth = Math.Min(a.Y, Math.Min(b.Y, c.Y));
-                maxDepth = Math.Max(a.Y, Math.Max(b.Y, c.Y));
+                minDepth = Math.Min(vertexA.Y, Math.Min(vertexB.Y, vertexC.Y));
+                maxDepth = Math.Max(vertexA.Y, Math.Max(vertexB.Y, vertexC.Y));
 
-                aW = a.X; aH = a.Z;
-                bW = b.X; bH = b.Z;
-                cW = c.X; cH = c.Z;
+                aW = vertexA.X; aH = vertexA.Z;
+                bW = vertexB.X; bH = vertexB.Z;
+                cW = vertexC.X; cH = vertexC.Z;
             }
             else // Z
             {
                 dominantAxis = 'Z';
 
                 // Width = X, Height = Y, Depth = Z
-                minWidth = Math.Min(a.X, Math.Min(b.X, c.X));
-                maxWidth = Math.Max(a.X, Math.Max(b.X, c.X));
+                minWidth = Math.Min(vertexA.X, Math.Min(vertexB.X, vertexC.X));
+                maxWidth = Math.Max(vertexA.X, Math.Max(vertexB.X, vertexC.X));
                 
-                minHeight = Math.Min(a.Y, Math.Min(b.Y, c.Y));
-                maxHeight = Math.Max(a.Y, Math.Max(b.Y, c.Y));
+                minHeight = Math.Min(vertexA.Y, Math.Min(vertexB.Y, vertexC.Y));
+                maxHeight = Math.Max(vertexA.Y, Math.Max(vertexB.Y, vertexC.Y));
                 
-                minDepth = Math.Min(a.Z, Math.Min(b.Z, c.Z));
-                maxDepth = Math.Max(a.Z, Math.Max(b.Z, c.Z));
+                minDepth = Math.Min(vertexA.Z, Math.Min(vertexB.Z, vertexC.Z));
+                maxDepth = Math.Max(vertexA.Z, Math.Max(vertexB.Z, vertexC.Z));
                 
-                aW = a.X; aH = a.Y;
-                bW = b.X; bH = b.Y;
-                cW = c.X; cH = c.Y;
+                aW = vertexA.X; aH = vertexA.Y;
+                bW = vertexB.X; bH = vertexB.Y;
+                cW = vertexC.X; cH = vertexC.Y;
             }
             int startWidth  = (int)Math.Floor(minWidth);
             int endWidth    = (int)Math.Ceiling(maxWidth);
