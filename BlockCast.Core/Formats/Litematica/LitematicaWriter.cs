@@ -36,21 +36,28 @@ public class LitematicaWriter
         var arraySize = (int) Math.Ceiling((float) region.Size.X * region.Size.Y * region.Size.Z / blocksPerLong);
         long[] blockStates = new long[arraySize];
 
-        var minX = region.Blocks.Keys.Min(k => k.Item1);
-        var minY = region.Blocks.Keys.Min(k => k.Item2);
-        var minZ = region.Blocks.Keys.Min(k => k.Item3);
+        var minX = region.Blocks.Keys.Min(k => k.X);
+        var minY = region.Blocks.Keys.Min(k => k.Y);
+        var minZ = region.Blocks.Keys.Min(k => k.Z);
         Console.WriteLine($"Actual min coords: {minX}, {minY}, {minZ}");
 
         Block[,,] blockArray = new Block[region.Size.X, region.Size.Y, region.Size.Z];
         foreach (var (pos, block) in region.Blocks)
-            blockArray[pos.Item1, pos.Item2, pos.Item3] = block;
-        
+        {
+            if (pos.X >= region.Size.X || pos.Y >= region.Size.Y || pos.Z >= region.Size.Z)
+            {
+                Console.WriteLine($"Out of bounds: {pos.X}, {pos.Y}, {pos.Z} vs {region.Size.X}, {region.Size.Y}, {region.Size.Z}");
+                continue;
+            }
+            blockArray[pos.X, pos.Y, pos.Z] = block;
+        }
+    
         int i = 0;
         for (int y = 0; y < region.Size.Y; y++)
             for (int z = 0; z < region.Size.Z; z++)
                 for (int x = 0; x < region.Size.X; x++)
                 {
-                    Block? block = blockArray[x, y, z];
+                    Block block = blockArray[x, y, z] ?? new Block("minecraft:air");
 
                     int longIndex = i / blocksPerLong;
                     int bitShift = i % blocksPerLong * bitsPerEntry;
