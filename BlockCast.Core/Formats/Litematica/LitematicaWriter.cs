@@ -33,7 +33,7 @@ public class LitematicaWriter
         var palette = region.GetPalette();
         int bitsPerEntry = (int) Math.Max(2, Math.Ceiling(Math.Log2(palette.Count)));
         int blocksPerLong = 64 / bitsPerEntry;
-        var arraySize = (int) Math.Ceiling((float) region.SizeX * region.SizeY * region.SizeZ / blocksPerLong);
+        var arraySize = (int) Math.Ceiling((float) region.Size.X * region.Size.Y * region.Size.Z / blocksPerLong);
         long[] blockStates = new long[arraySize];
 
         var minX = region.Blocks.Keys.Min(k => k.Item1);
@@ -41,14 +41,14 @@ public class LitematicaWriter
         var minZ = region.Blocks.Keys.Min(k => k.Item3);
         Console.WriteLine($"Actual min coords: {minX}, {minY}, {minZ}");
 
-        Block[,,] blockArray = new Block[region.SizeX, region.SizeY, region.SizeZ];
+        Block[,,] blockArray = new Block[region.Size.X, region.Size.Y, region.Size.Z];
         foreach (var (pos, block) in region.Blocks)
             blockArray[pos.Item1, pos.Item2, pos.Item3] = block;
         
         int i = 0;
-        for (int y = 0; y < region.SizeY; y++)
-            for (int z = 0; z < region.SizeZ; z++)
-                for (int x = 0; x < region.SizeX; x++)
+        for (int y = 0; y < region.Size.Y; y++)
+            for (int z = 0; z < region.Size.Z; z++)
+                for (int x = 0; x < region.Size.X; x++)
                 {
                     Block? block = blockArray[x, y, z];
 
@@ -63,15 +63,15 @@ public class LitematicaWriter
         {
             new CompoundTag("Position")
             {
-                new IntTag("x", region.PosX),
-                new IntTag("y", region.PosY),
-                new IntTag("z", region.PosZ)
+                new IntTag("x", region.Max.X - region.Size.X),
+                new IntTag("y", region.Max.Y - region.Size.Y),
+                new IntTag("z", region.Max.Z - region.Size.Z)
             },
             new CompoundTag("Size")
             {
-                new IntTag("x", region.SizeX),
-                new IntTag("y", region.SizeY),
-                new IntTag("z", region.SizeZ)
+                new IntTag("x", region.Size.X),
+                new IntTag("y", region.Size.Y),
+                new IntTag("z", region.Size.Z)
             },
             CreatePaletteTag(palette),
             new LongArrayTag("BlockStates", blockStates),

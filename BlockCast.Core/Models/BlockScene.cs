@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace BlockCast.Core.Models;
 
 public class BlockScene(string name, string author)
@@ -7,21 +5,14 @@ public class BlockScene(string name, string author)
     public string Name { get; set; } = name;
     public string Author { get; set; } = author;
     public List<BlockRegion> Regions {get; set; } = [];
-    public int MaxX { get; set; }
-    public int MaxY { get; set; }
-    public int MaxZ { get; set; }
-    public int MinX { get; set; }
-    public int MinY { get; set; }
-    public int MinZ { get; set; }
+    public BlockPos Min {get; private set;} = new(int.MaxValue, int.MaxValue, int.MaxValue);
+    public BlockPos Max {get; private set;} = new(int.MinValue, int.MinValue, int.MinValue);
+    public BlockPos Size => Max - Min;
 
     public void AddRegion(BlockRegion region)
     {
         Regions.Add(region);
-        MaxX = Math.Max(MaxX, region.PosX + region.SizeX);
-        MaxY = Math.Max(MaxY, region.PosY + region.SizeY);
-        MaxZ = Math.Max(MaxZ, region.PosZ + region.SizeZ);
-        MinX = Math.Min(MinX, region.PosX);
-        MinY = Math.Min(MinY, region.PosY);
-        MinZ = Math.Min(MinZ, region.PosZ);
+        Max = new BlockPos(Math.Max(Max.X, region.Max.X), Math.Max(Max.Y, region.Max.Y), Math.Max(Max.Z, region.Max.Z));
+        Min = new BlockPos(Math.Min(Min.X, region.Min.X), Math.Min(Min.Y, region.Min.Y), Math.Min(Min.Z, region.Min.Z));
     }
 }

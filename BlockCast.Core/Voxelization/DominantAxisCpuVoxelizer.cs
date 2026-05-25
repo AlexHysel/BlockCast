@@ -8,7 +8,7 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
     public override BlockScene Voxelize(Mesh mesh)
     {
         BlockScene blockScene = new("Main", "Me");
-        BlockRegion region = new("Main", 0, 0, 0);
+        BlockRegion region = new("Main");
 
         foreach (var triangle in mesh.Faces)
         {
@@ -121,13 +121,18 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                             blockY = h;
                             blockZ = (int)Math.Floor(depth);
                         }
+
+                        if (blockX < 0 || blockY < 0 || blockZ < 0)
+                            continue;
+
+                        region.AddBlock(blockX, blockY, blockZ, new Block("minecraft:stone"));
                     }
                 }
         }
         blockScene.AddRegion(region);
-        Console.WriteLine($"Region size: {region.SizeX} x {region.SizeY} x {region.SizeZ}");
+        Console.WriteLine($"Region size: {region.Size.X} x {region.Size.Y} x {region.Size.Z}");
         Console.WriteLine($"Block count: {region.Blocks.Count}");
-        Console.WriteLine($"Total cells: {(long)region.SizeX * region.SizeY * region.SizeZ}");
+        Console.WriteLine($"Total cells: {(long)region.Size.X * region.Size.Y * region.Size.Z}");
         return blockScene;
     }
 
