@@ -12,11 +12,11 @@ Console.Write("Parsing OBJ... ");
 Mesh mesh = OBJParser.Parse(obj);
 PrintDone();
 
-Console.WriteLine("Voxelizing...");
+Console.Write("Voxelizing... ");
 BlockScene scene = voxelizer.Voxelize(mesh);
 PrintDone();
 
-Console.WriteLine("Writing Litematica file...");
+Console.Write("Writing Litematica file... ");
 LitematicaWriter.WriteToFile("t.litematic", scene);
 PrintDone();
 

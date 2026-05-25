@@ -130,9 +130,6 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                 }
         }
         blockScene.AddRegion(region);
-        Console.WriteLine($"Region size: {region.Size.X} x {region.Size.Y} x {region.Size.Z}");
-        Console.WriteLine($"Block count: {region.Blocks.Count}");
-        Console.WriteLine($"Total cells: {(long)region.Size.X * region.Size.Y * region.Size.Z}");
         return blockScene;
     }
 

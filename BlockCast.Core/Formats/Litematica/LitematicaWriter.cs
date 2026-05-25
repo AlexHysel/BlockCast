@@ -39,18 +39,10 @@ public class LitematicaWriter
         var minX = region.Blocks.Keys.Min(k => k.X);
         var minY = region.Blocks.Keys.Min(k => k.Y);
         var minZ = region.Blocks.Keys.Min(k => k.Z);
-        Console.WriteLine($"Actual min coords: {minX}, {minY}, {minZ}");
 
         Block[,,] blockArray = new Block[region.Size.X, region.Size.Y, region.Size.Z];
         foreach (var (pos, block) in region.Blocks)
-        {
-            if (pos.X >= region.Size.X || pos.Y >= region.Size.Y || pos.Z >= region.Size.Z)
-            {
-                Console.WriteLine($"Out of bounds: {pos.X}, {pos.Y}, {pos.Z} vs {region.Size.X}, {region.Size.Y}, {region.Size.Z}");
-                continue;
-            }
             blockArray[pos.X, pos.Y, pos.Z] = block;
-        }
     
         int i = 0;
         for (int y = 0; y < region.Size.Y; y++)
