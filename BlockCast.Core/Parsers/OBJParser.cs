@@ -12,7 +12,10 @@ public class OBJParser
         {
             if (line.StartsWith("v "))
             {
-                float[] values = [.. line.Split(' ').Skip(1).Select(float.Parse)];
+                float[] values = [
+                    .. line.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Skip(1).Select(float.Parse)
+                ];
                 mesh.AddVertex(new Vector3(values));
             }
             else if (line.StartsWith("f "))

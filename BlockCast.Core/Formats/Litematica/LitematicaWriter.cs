@@ -33,15 +33,25 @@ public class LitematicaWriter
         var palette = region.GetPalette();
         int bitsPerEntry = (int) Math.Max(2, Math.Ceiling(Math.Log2(palette.Count)));
         int blocksPerLong = 64 / bitsPerEntry;
-        var arraySize = (int) Math.Ceiling((float) (region.PosX + region.SizeX) * (region.PosY + region.SizeY) * (region.PosZ + region.SizeZ) / blocksPerLong);
+        var arraySize = (int) Math.Ceiling((float) region.SizeX * region.SizeY * region.SizeZ / blocksPerLong);
         long[] blockStates = new long[arraySize];
+
+        var minX = region.Blocks.Keys.Min(k => k.Item1);
+        var minY = region.Blocks.Keys.Min(k => k.Item2);
+        var minZ = region.Blocks.Keys.Min(k => k.Item3);
+        Console.WriteLine($"Actual min coords: {minX}, {minY}, {minZ}");
+
+        Block[,,] blockArray = new Block[region.SizeX, region.SizeY, region.SizeZ];
+        foreach (var (pos, block) in region.Blocks)
+            blockArray[pos.Item1, pos.Item2, pos.Item3] = block;
         
         int i = 0;
-        for (int y = region.PosY; y < region.PosY + region.SizeY; y++)
-            for (int z = region.PosZ; z < region.PosZ + region.SizeZ; z++)
-                for (int x = region.PosX; x < region.PosX + region.SizeX; x++)
+        for (int y = 0; y < region.SizeY; y++)
+            for (int z = 0; z < region.SizeZ; z++)
+                for (int x = 0; x < region.SizeX; x++)
                 {
-                    Block? block = region.GetBlock(x, y, z);
+                    Block? block = blockArray[x, y, z];
+
                     int longIndex = i / blocksPerLong;
                     int bitShift = i % blocksPerLong * bitsPerEntry;
                     int paletteIndex = palette.FindIndex(b => b.Name == block.Name);

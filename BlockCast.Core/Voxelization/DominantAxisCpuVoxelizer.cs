@@ -12,9 +12,9 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
 
         foreach (var triangle in mesh.Faces)
         {
-            Vector3 a = mesh.GetVertex(triangle.A);
-            Vector3 b = mesh.GetVertex(triangle.B);
-            Vector3 c = mesh.GetVertex(triangle.C);
+            Vector3 a = mesh.GetVertex(triangle.A) - mesh.Min;
+            Vector3 b = mesh.GetVertex(triangle.B) - mesh.Min;
+            Vector3 c = mesh.GetVertex(triangle.C) - mesh.Min;
 
             Vector3 normal = Vector3.Normalize(Vector3.Cross(b - a, c - a));
             float d = -Vector3.Dot(normal, a);
@@ -121,12 +121,13 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                             blockY = h;
                             blockZ = (int)Math.Floor(depth);
                         }
-
-                        region.Blocks[(blockX, blockY, blockZ)] = new Block("minecraft:stone");
                     }
                 }
         }
         blockScene.AddRegion(region);
+        Console.WriteLine($"Region size: {region.SizeX} x {region.SizeY} x {region.SizeZ}");
+        Console.WriteLine($"Block count: {region.Blocks.Count}");
+        Console.WriteLine($"Total cells: {(long)region.SizeX * region.SizeY * region.SizeZ}");
         return blockScene;
     }
 

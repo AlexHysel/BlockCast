@@ -10,7 +10,7 @@ string obj = File.ReadAllText("untitled.obj");
 Console.WriteLine("Parsing OBJ...");
 Mesh mesh = OBJParser.Parse(obj);
 Console.WriteLine($"Faces: {mesh.Faces.Count}");
-Console.WriteLine($"Size: {mesh.Size}");
+Console.WriteLine($"Size: {mesh.Size}, {mesh.Min} to {mesh.Max}");
 
 Console.WriteLine("Voxelizing...");
 BlockScene scene = voxelizer.Voxelize(mesh);
