@@ -17,7 +17,7 @@ BlockScene scene = voxelizer.Voxelize(mesh);
 PrintDone();
 
 Console.Write("Writing Litematica file... ");
-LitematicaWriter.WriteToFile("t.litematic", scene);
+LitematicWriter.WriteToFile("t.litematic", scene);
 PrintDone();
 
 static void PrintDone()

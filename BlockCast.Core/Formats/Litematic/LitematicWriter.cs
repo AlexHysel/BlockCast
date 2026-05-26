@@ -4,7 +4,7 @@ using SharpNBT;
 
 namespace BlockCast.Core.Formats.Litematica;
 
-public class LitematicaWriter
+public class LitematicWriter
 {
     public static void WriteToFile(string path, BlockScene scene)
     {        

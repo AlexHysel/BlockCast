@@ -17,7 +17,7 @@ public class LitematicaWriterTests
         var scene = new BlockScene("Test Scene", "Test Author");
         scene.Regions.Add(region);
 
-        LitematicaWriter.WriteToFile("test.litematic", scene);
+        LitematicWriter.WriteToFile("test.litematic", scene);
         
         BlockScene scene2 = LitematicReader.GetSceneFromLitematic("test.litematic");
 
