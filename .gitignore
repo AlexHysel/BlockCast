@@ -9,6 +9,7 @@
 
 *.litematic
 *.obj
+*.mtl
 
 # Build results
 [Dd]ebug/
