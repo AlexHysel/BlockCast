@@ -33,4 +33,9 @@ public class BlockRegion(string name)
     {
         return Blocks.TryGetValue(new BlockPos(x, y, z), out var block) ? block : new Block("minecraft:air");
     }
+
+    public Block GetBlock(BlockPos pos)
+    {
+        return Blocks.TryGetValue(pos, out var Block) ? Block : new Block("minecraft:air");
+    }
 }
