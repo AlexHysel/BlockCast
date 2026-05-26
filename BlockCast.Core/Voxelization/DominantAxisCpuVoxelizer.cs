@@ -5,16 +5,15 @@ namespace BlockCast.Core.Voxelization;
 
 public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(options)
 {
-    public override BlockScene Voxelize(Mesh mesh)
+    public override BlockScene Voxelize(Mesh mesh, IProgress<float>? progress = null)
     {
         BlockScene blockScene = new("Main", "Me");
         BlockRegion region = new("Main");
-
-        foreach (var triangle in mesh.Faces)
+        for (int t = 0; t < mesh.Faces.Count; t++)
         {
-            Vector3 vertexA = mesh.GetVertex(triangle.A) - mesh.Min;
-            Vector3 vertexB = mesh.GetVertex(triangle.B) - mesh.Min;
-            Vector3 vertexC = mesh.GetVertex(triangle.C) - mesh.Min;
+            Vector3 vertexA = mesh.GetVertex(mesh.Faces[t].A) - mesh.Min;
+            Vector3 vertexB = mesh.GetVertex(mesh.Faces[t].B) - mesh.Min;
+            Vector3 vertexC = mesh.GetVertex(mesh.Faces[t].C) - mesh.Min;
 
             Vector3 normal = Vector3.Normalize(Vector3.Cross(vertexB - vertexA, vertexC - vertexA));
             float d = -Vector3.Dot(normal, vertexA);
@@ -128,7 +127,10 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                         region.AddBlock(blockX, blockY, blockZ, new Block("minecraft:stone"));
                     }
                 }
+            if (t % 30000 == 0 || t == mesh.Faces.Count)
+                progress?.Report(100f / mesh.Faces.Count * t);
         }
+        progress?.Report(100f);
         blockScene.AddRegion(region);
         return blockScene;
     }

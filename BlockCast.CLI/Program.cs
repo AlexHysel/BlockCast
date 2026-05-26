@@ -8,24 +8,17 @@ var voxelizer = new DominantAxisCpuVoxelizer(new VoxelizerOptions());
 
 string obj = File.ReadAllText("untitled.obj");
 
-Console.Write("Parsing OBJ... ");
-Mesh mesh = OBJParser.Parse(obj);
-PrintDone();
+var progress = new Progress<float>(p => Console.Write($"\rParsing OBJ...\t{p:F1}%"));
+Mesh mesh = OBJParser.Parse(obj, progress);
 
-Console.Write("Voxelizing... ");
-BlockScene scene = voxelizer.Voxelize(mesh);
-PrintDone();
+Console.WriteLine();
+progress = new Progress<float>(p => Console.Write($"\rVoxelizing...\t{p:F1}%"));
+BlockScene scene = voxelizer.Voxelize(mesh, progress);
 
-Console.Write("Writing Litematica file... ");
-LitematicWriter.WriteToFile("t.litematic", scene);
-PrintDone();
-
-static void PrintDone()
-{
-    Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine("Done.");
-    Console.ForegroundColor = ConsoleColor.White;
-}
+Console.WriteLine();
+progress = new Progress<float>(p => Console.Write($"\rWriting .litematic...\t{p:F1}%"));
+LitematicWriter.WriteToFile("t.litematic", scene, progress);
+Console.WriteLine();
 
 static void PrintHeader()
 {

@@ -6,8 +6,9 @@ namespace BlockCast.Core.Formats.Litematica;
 
 public class LitematicWriter
 {
-    public static void WriteToFile(string path, BlockScene scene)
+    public static void WriteToFile(string path, BlockScene scene, IProgress<float>? progress = null)
     {        
+        progress?.Report(0f);
         CompoundTag root = new("BlockCast")
         {
             new IntTag("Version", 6),
@@ -17,8 +18,13 @@ public class LitematicWriter
 
         CompoundTag regions = new("Regions");
         
+        int i = 0;
         foreach (var r in scene.Regions)
+        {
             regions.Add(CreateRegionTag(r));
+            i++;
+            progress?.Report(100f / scene.Regions.Count * i);
+        }
         
         root.Add(regions);
 
@@ -26,6 +32,7 @@ public class LitematicWriter
         using var gzip = new GZipStream(fileStream, CompressionMode.Compress);
         using var writer = new TagWriter(gzip, FormatOptions.Java);
         writer.WriteTag(root);
+        progress?.Report(100f);
     }
 
     private static CompoundTag CreateRegionTag(BlockRegion region)
