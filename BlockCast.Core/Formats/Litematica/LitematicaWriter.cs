@@ -62,9 +62,9 @@ public class LitematicaWriter
         {
             new CompoundTag("Position")
             {
-                new IntTag("x", region.Max.X - region.Size.X),
-                new IntTag("y", region.Max.Y - region.Size.Y),
-                new IntTag("z", region.Max.Z - region.Size.Z)
+                new IntTag("x", region.Max.X - region.Size.X + 1),
+                new IntTag("y", region.Max.Y - region.Size.Y + 1),
+                new IntTag("z", region.Max.Z - region.Size.Z + 1)
             },
             new CompoundTag("Size")
             {

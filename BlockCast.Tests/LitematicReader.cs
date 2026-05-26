@@ -28,11 +28,11 @@ class LitematicReader
             ListTag blockPalette = region.Get<ListTag>("BlockStatePalette");
             LongArrayTag blocks = region.Get<LongArrayTag>("BlockStates");
             CompoundTag posTag = region.Get<CompoundTag>("Position");
-            BlockPos min = new(posTag.Get<IntTag>("x"), posTag.Get<IntTag>("y"), posTag.Get<IntTag>("z"));
+            BlockPos min = new(posTag.Get<IntTag>("x").Value, posTag.Get<IntTag>("y").Value, posTag.Get<IntTag>("z").Value);
             CompoundTag sizeTag = region.Get<CompoundTag>("Size");
-            BlockPos max = new BlockPos(sizeTag.Get<IntTag>("x"), sizeTag.Get<IntTag>("y"), sizeTag.Get<IntTag>("z")) + min;
+            BlockPos max = new BlockPos(sizeTag.Get<IntTag>("x"), sizeTag.Get<IntTag>("y"), sizeTag.Get<IntTag>("z")) + min - new BlockPos(1, 1, 1);
 
-            int bitsPerBlock = (int) Math.Ceiling(Math.Log2(blockPalette.Count));
+            int bitsPerBlock = (int) Math.Max(2, Math.Ceiling(Math.Log2(blockPalette.Count)));
             int blocksPerLong = 64 / bitsPerBlock;
             int longIndex = 0;
             int blockIndex = 0;
@@ -46,9 +46,15 @@ class LitematicReader
                     blockIndex = 0;
                     longIndex++;
                 }
-                int blockInPalette = (int) ((blocks[longIndex] >> bitsPerBlock * blockIndex) - long.MaxValue - 7);
-                Block block = new(blockPalette[blockInPalette].Name);
+                if (longIndex >= blocks.Count)
+                    break;
+                int mask = (1 << bitsPerBlock) - 1;
+                int blockInPalette = (int) ((blocks[longIndex] >> bitsPerBlock * blockIndex) & mask);
+                Block block = new(((CompoundTag)blockPalette[blockInPalette]).Get<StringTag>("Name").Value);
+                if (block != new Block("minecraft:air"))
+                    blockRegion.AddBlock(x, y, z, block);
             }
+            scene.AddRegion(blockRegion);
         }
         return scene;
     }

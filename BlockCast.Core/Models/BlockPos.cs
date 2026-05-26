@@ -1,10 +1,10 @@
 namespace BlockCast.Core.Models;
 
-public record BlockPos(int x, int y, int z)
+public record BlockPos(int X, int Y, int Z)
 {
-    public int X { get; set; } = x;
-    public int Y { get; set; } = y;
-    public int Z { get; set; } = z;
+    public int X { get; set; } = X;
+    public int Y { get; set; } = Y;
+    public int Z { get; set; } = Z;
 
     public static BlockPos operator +(BlockPos a, BlockPos b)
     {
