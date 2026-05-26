@@ -8,7 +8,7 @@ public class LitematicaWriterTests
     [Fact]
     public void FileCreated()
     {
-        var region = new BlockRegion("Test", 1, 1, 1);
+        var region = new BlockRegion("Test");
         for (int x = 0; x < 1; x++)
             for (int y = 0; y < 1; y++)
                 for (int z = 0; z < 1; z++)

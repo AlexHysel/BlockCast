@@ -32,10 +32,6 @@ public class VoxelizerTests
         var voxelizer = new DominantAxisCpuVoxelizer(new VoxelizerOptions());
         BlockScene scene = voxelizer.Voxelize(mesh);
         BlockRegion region = scene.Regions[0];
-
-        Console.WriteLine($"Block count: {region.Blocks.Count}");
-        Console.WriteLine($"Size: {region.SizeX} x {region.SizeY} x {region.SizeZ}");
-
         Assert.True(region.Blocks.Count > 0);
     }
 }
