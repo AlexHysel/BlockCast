@@ -6,5 +6,5 @@ public abstract class Voxelizer(VoxelizerOptions options)
 {
     protected VoxelizerOptions Options { get; set; } = options;
 
-    public abstract BlockScene Voxelize(MeshScene meshScene, IProgress<float> progress);
+    public abstract BlockScene Voxelize(MeshScene meshScene, IProgress<float>? progress);
 }

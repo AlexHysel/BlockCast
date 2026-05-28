@@ -19,6 +19,7 @@ public class OBJParser
             {
                 scene.Meshes.Add(new Mesh(line[2..].Trim()));
                 meshIndex++;
+                progress?.Report(100f / lines.Length * l);
             }
             else if (line.StartsWith("v "))
             {
@@ -37,8 +38,6 @@ public class OBJParser
                 for (int i = 0; i < values.Length - 2; i++)
                     scene.Meshes[meshIndex].Faces.Add(new Triangle(values[0], values[i + 1], values[i + 2]));
             }
-            if (l % 30000 == 0)
-                progress?.Report(100f / lines.Length * l);
         }
         progress?.Report(100f);
         return scene;
