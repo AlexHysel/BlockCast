@@ -25,8 +25,7 @@ public class BlockRegion(string name)
 
     public List<Block> GetPalette()
     {
-        HashSet<Block> palette = [new Block("minecraft:air"), .. Blocks.Values];
-        return [.. palette];
+        return [new Block("minecraft:air"), .. Blocks.Values];
     }
     
     public Block GetBlock(int x, int y, int z)

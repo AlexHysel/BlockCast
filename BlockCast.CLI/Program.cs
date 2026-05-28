@@ -12,12 +12,12 @@ var voxelizer = new DominantAxisCpuVoxelizer(new VoxelizerOptions());
 string obj = File.ReadAllText("untitled.obj");
 
 var progress = new Progress<float>(p => Console.Write($"\rParsing OBJ...\t{p:F1}%"));
-Mesh mesh = OBJParser.Parse(obj, progress);
+MeshScene meshScene = OBJParser.Parse(obj, progress);
 Console.WriteLine($"\tTime: {stopwatch.ElapsedMilliseconds} ms");
 stopwatch.Restart();
 
 progress = new Progress<float>(p => Console.Write($"\rVoxelizing...\t{p:F1}%"));
-BlockScene scene = voxelizer.Voxelize(mesh, progress);
+BlockScene scene = voxelizer.Voxelize(meshScene, progress);
 Console.WriteLine($"\tTime: {stopwatch.ElapsedMilliseconds} ms");
 stopwatch.Restart();
 

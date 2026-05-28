@@ -20,11 +20,12 @@ public class LitematicWriter
         
         int i = 0;
         foreach (var r in scene.Regions)
-        {
-            regions.Add(CreateRegionTag(r));
-            i++;
-            progress?.Report(100f / scene.Regions.Count * i);
-        }
+            if (r.Blocks.Count > 0)
+            {
+                regions.Add(CreateRegionTag(r));
+                i++;
+                progress?.Report(100f / scene.Regions.Count * i);
+            }
         
         root.Add(regions);
 
@@ -43,13 +44,9 @@ public class LitematicWriter
         var arraySize = (int) Math.Ceiling((float) region.Size.X * region.Size.Y * region.Size.Z / blocksPerLong);
         long[] blockStates = new long[arraySize];
 
-        var minX = region.Blocks.Keys.Min(k => k.X);
-        var minY = region.Blocks.Keys.Min(k => k.Y);
-        var minZ = region.Blocks.Keys.Min(k => k.Z);
-
         Block[,,] blockArray = new Block[region.Size.X, region.Size.Y, region.Size.Z];
         foreach (var (pos, block) in region.Blocks)
-            blockArray[pos.X, pos.Y, pos.Z] = block;
+            blockArray[pos.X - region.Min.X, pos.Y - region.Min.Y, pos.Z - region.Min.Z] = block;
     
         int i = 0;
         for (int y = 0; y < region.Size.Y; y++)

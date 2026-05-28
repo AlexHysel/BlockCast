@@ -26,11 +26,11 @@ public class VoxelizerTests
             f 4 1 5 8
             """;
 
-        Mesh mesh = OBJParser.Parse(obj);
-        Console.WriteLine($"Faces: {mesh.Faces.Count}");
-        Console.WriteLine($"Min: {mesh.Min}, Max: {mesh.Max}");
+        MeshScene meshScene = OBJParser.Parse(obj);
+        Console.WriteLine($"Faces: {meshScene.Meshes[0].Faces.Count}");
+        Console.WriteLine($"Min: {meshScene.Min}, Max: {meshScene.Max}");
         var voxelizer = new DominantAxisCpuVoxelizer(new VoxelizerOptions());
-        BlockScene scene = voxelizer.Voxelize(mesh);
+        BlockScene scene = voxelizer.Voxelize(meshScene);
         BlockRegion region = scene.Regions[0];
         Assert.True(region.Blocks.Count > 0);
     }
