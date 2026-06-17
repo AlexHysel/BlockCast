@@ -133,7 +133,6 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
             }
             progress?.Report(100f / meshScene.Meshes.Count * meshIndex);
         }
-        // add the single combined region
         blockScene.AddRegion(region);
         progress?.Report(100f);
         return blockScene;

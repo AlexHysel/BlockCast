@@ -4,7 +4,7 @@ using BlockCast.Core.Voxelization;
 
 public class RayTracingVoxelizer(VoxelizerOptions options): Voxelizer(options)
 {
-    public override BlockScene Voxelize(MeshScene meshScene, IProgress<float>? progress)
+    public override BlockScene Voxelize(MeshScene meshScene, IProgress<float>? progress = null)
     {
         BlockScene scene = new("scene", "BlockCast");
         BlockRegion region = new("region");
@@ -53,6 +53,7 @@ public class RayTracingVoxelizer(VoxelizerOptions options): Voxelizer(options)
             }
             progress?.Report(100f / maxX * x);
         }
+        progress?.Report(100f);
         scene.AddRegion(region);
         return scene;     
     }
