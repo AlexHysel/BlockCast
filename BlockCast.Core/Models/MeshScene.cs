@@ -1,5 +1,4 @@
 using System.Numerics;
-using BlockCast.Core.Models;
 
 namespace BlockCast.Core.Models;
 

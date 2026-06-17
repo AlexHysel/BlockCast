@@ -41,7 +41,7 @@ public class LitematicWriter
         var palette = region.GetPalette();
         int bitsPerEntry = (int) Math.Max(2, Math.Ceiling(Math.Log2(palette.Count)));
         int blocksPerLong = 64 / bitsPerEntry;
-        var arraySize = (int) Math.Ceiling((float) region.Size.X * region.Size.Y * region.Size.Z / blocksPerLong);
+        var arraySize = (int) Math.Ceiling((double) region.Size.X * region.Size.Y * region.Size.Z / blocksPerLong);
         long[] blockStates = new long[arraySize];
 
         Block[,,] blockArray = new Block[region.Size.X, region.Size.Y, region.Size.Z];
@@ -66,9 +66,9 @@ public class LitematicWriter
         {
             new CompoundTag("Position")
             {
-                new IntTag("x", region.Max.X - region.Size.X + 1),
-                new IntTag("y", region.Max.Y - region.Size.Y + 1),
-                new IntTag("z", region.Max.Z - region.Size.Z + 1)
+                new IntTag("x", region.Min.X),
+                new IntTag("y", region.Min.Y),
+                new IntTag("z", region.Min.Z)
             },
             new CompoundTag("Size")
             {

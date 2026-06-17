@@ -27,7 +27,8 @@ public class OBJParser
                     .. line.Split(' ', StringSplitOptions.RemoveEmptyEntries)
                     .Skip(1).Select(float.Parse)
                 ];
-                scene.AddVertex(new Vector3(values));
+                Vector3 v = new Vector3(values);
+                scene.AddVertex(v);
             }
             else if (line.StartsWith("f "))
             {

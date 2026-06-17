@@ -22,10 +22,10 @@ public class BlockRegion(string name)
         Max = new BlockPos(Math.Max(Max.X, x), Math.Max(Max.Y, y), Math.Max(Max.Z, z));
         Min = new BlockPos(Math.Min(Min.X, x), Math.Min(Min.Y, y), Math.Min(Min.Z, z));
     }
-
+    
     public List<Block> GetPalette()
     {
-        return [new Block("minecraft:air"), .. Blocks.Values];
+        return [new Block("minecraft:air"), .. Blocks.Values.DistinctBy(b => b.Name)];
     }
     
     public Block GetBlock(int x, int y, int z)

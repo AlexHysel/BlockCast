@@ -1,32 +1,48 @@
-﻿using System.Diagnostics;
-using BlockCast.Core.Formats.Litematica;
+﻿using BlockCast.Core.Formats.Litematica;
 using BlockCast.Core.Models;
 using BlockCast.Core.Parsers;
 using BlockCast.Core.Voxelization;
 using Spectre.Console;
+using System.CommandLine;
 
-var stopwatch= Stopwatch.StartNew();
-PrintHeader();
 
-var voxelizer = new DominantAxisCpuVoxelizer(new VoxelizerOptions());
-string obj = File.ReadAllText("untitled.obj");
-AnsiConsole.Progress().Start(ctx =>
+var inputArg = new Argument<FileInfo>("input .obj");
+var outputArg = new Argument<FileInfo>("output");
+
+var rootCommand = new RootCommand
 {
-    var parseTask = ctx.AddTask("Parsing OBJ", maxValue: 100);
-    var voxelTask = ctx.AddTask("Voxelizing", maxValue: 100);
-    var writeTask = ctx.AddTask("Writing .litematic", maxValue: 100);
+    inputArg,
+    outputArg
+};
 
-    var progress = new Progress<float>(p => parseTask.Value = p);
-    MeshScene meshScene = OBJParser.Parse(obj, progress);
+rootCommand.SetAction(parseResult =>
+{
+    var input = parseResult.GetValue(inputArg);
+    var output = parseResult.GetValue(outputArg);
 
-    progress = new Progress<float>(p => voxelTask.Value = p);
-    BlockScene scene = voxelizer.Voxelize(meshScene, progress);
+    PrintHeader();
+    var voxelizer = new RayTracingVoxelizer(new VoxelizerOptions());
+    string obj = File.ReadAllText(input.FullName);
+    AnsiConsole.Progress().Start(ctx =>
+    {
+        var parseTask = ctx.AddTask("Parsing OBJ", maxValue: 100);
+        var voxelTask = ctx.AddTask("Voxelizing", maxValue: 100);
+        var writeTask = ctx.AddTask("Writing .litematic", maxValue: 100);
 
-    progress = new Progress<float>(p => writeTask.Value = p);
-    LitematicWriter.WriteToFile("t.litematic", scene, progress);
+        var progress = new Progress<float>(p => parseTask.Value = p);
+        MeshScene meshScene = OBJParser.Parse(obj, progress);
+
+        progress = new Progress<float>(p => voxelTask.Value = p);
+        BlockScene scene = voxelizer.Voxelize(meshScene, progress);
+
+        progress = new Progress<float>(p => writeTask.Value = p);
+        LitematicWriter.WriteToFile(output.FullName, scene, progress);
+    });
+
+    return 0;
 });
 
-stopwatch.Stop();
+await rootCommand.Parse(args).InvokeAsync();
 
 static void PrintHeader()
 {
