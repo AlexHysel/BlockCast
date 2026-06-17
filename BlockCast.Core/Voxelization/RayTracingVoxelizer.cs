@@ -27,7 +27,7 @@ public class RayTracingVoxelizer(VoxelizerOptions options): Voxelizer(options)
                     Vector3 faceB = meshScene.GetVertex(face.B);
                     Vector3 faceC = meshScene.GetVertex(face.C);
 
-                    if (Utils.IsPointInTriangle(faceA, faceB, faceC, point))
+                    if (Utils.IsPointInTriangleXZ(faceA, faceB, faceC, point))
                     {
                         float areaABC = Utils.SignedArea(faceB, faceC, faceA);
                         if (areaABC != 0)

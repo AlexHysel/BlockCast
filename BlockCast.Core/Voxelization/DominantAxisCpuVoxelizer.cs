@@ -8,7 +8,6 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
     public override BlockScene Voxelize(MeshScene meshScene, IProgress<float>? progress = null)
     {
         BlockScene blockScene = new("Main", "Me");
-        // Use a single region for the whole scene to avoid overlapping AABB issues
         BlockRegion region = new("Main");
         for (int meshIndex = 0; meshIndex < meshScene.Meshes.Count; meshIndex++)
         {
@@ -41,8 +40,8 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                     minHeight = Math.Min(vertexA.Y, Math.Min(vertexB.Y, vertexC.Y));
                     maxHeight = Math.Max(vertexA.Y, Math.Max(vertexB.Y, vertexC.Y));
 
-                    minDepth = Math.Min(vertexA.X, Math.Min(vertexB.X, vertexC.X));
-                    maxDepth = Math.Max(vertexA.X, Math.Max(vertexB.X, vertexC.X));
+                    //minDepth = Math.Min(vertexA.X, Math.Min(vertexB.X, vertexC.X));
+                    //maxDepth = Math.Max(vertexA.X, Math.Max(vertexB.X, vertexC.X));
 
                     aW = vertexA.Z; aH = vertexA.Y;
                     bW = vertexB.Z; bH = vertexB.Y;
@@ -59,8 +58,8 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                     minHeight = Math.Min(vertexA.Z, Math.Min(vertexB.Z, vertexC.Z));
                     maxHeight = Math.Max(vertexA.Z, Math.Max(vertexB.Z, vertexC.Z));
                     
-                    minDepth = Math.Min(vertexA.Y, Math.Min(vertexB.Y, vertexC.Y));
-                    maxDepth = Math.Max(vertexA.Y, Math.Max(vertexB.Y, vertexC.Y));
+                    //minDepth = Math.Min(vertexA.Y, Math.Min(vertexB.Y, vertexC.Y));
+                    //maxDepth = Math.Max(vertexA.Y, Math.Max(vertexB.Y, vertexC.Y));
 
                     aW = vertexA.X; aH = vertexA.Z;
                     bW = vertexB.X; bH = vertexB.Z;
@@ -77,8 +76,8 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
                     minHeight = Math.Min(vertexA.Y, Math.Min(vertexB.Y, vertexC.Y));
                     maxHeight = Math.Max(vertexA.Y, Math.Max(vertexB.Y, vertexC.Y));
                     
-                    minDepth = Math.Min(vertexA.Z, Math.Min(vertexB.Z, vertexC.Z));
-                    maxDepth = Math.Max(vertexA.Z, Math.Max(vertexB.Z, vertexC.Z));
+                    //minDepth = Math.Min(vertexA.Z, Math.Min(vertexB.Z, vertexC.Z));
+                    //maxDepth = Math.Max(vertexA.Z, Math.Max(vertexB.Z, vertexC.Z));
                     
                     aW = vertexA.X; aH = vertexA.Y;
                     bW = vertexB.X; bH = vertexB.Y;
@@ -97,7 +96,7 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
 
                         int blockX = 0, blockY = 0, blockZ = 0;
                         float depth = 0;
-                        if (IsPointInTriangle(pW, pH, aW, aH, bW, bH, cW, cH))
+                        if (Utils.IsPointInTriangleXZ(new Vector3(aW, 0, aH), new Vector3(bW, 0, bH), new Vector3(cW, 0, cH), new Vector3(pW, 0, pH)))
                         {
                             //N * P - N * A
                             if (dominantAxis == 'X')
@@ -138,20 +137,5 @@ public class DominantAxisCpuVoxelizer(VoxelizerOptions options) : Voxelizer(opti
         blockScene.AddRegion(region);
         progress?.Report(100f);
         return blockScene;
-    }
-
-    //returns negative if the dot is on the right, positive if on the left
-    private float CrossProduct(float pX, float pY, float v1X, float v1Y, float v2X, float v2Y)
-    {
-        return (pX - v1X) * (v2Y - v1Y) - (pY - v1Y) * (v2X - v1X);
-    }
-
-    private bool IsPointInTriangle(float pX, float pY, float v1X, float v1Y, float v2X, float v2Y, float v3X, float v3Y)
-    {
-        bool b1 = CrossProduct(pX, pY, v1X, v1Y, v2X, v2Y) < 0.0f;
-        bool b2 = CrossProduct(pX, pY, v2X, v2Y, v3X, v3Y) < 0.0f;
-        bool b3 = CrossProduct(pX, pY, v3X, v3Y, v1X, v1Y) < 0.0f;
-
-        return b1 == b2 == b3;
     }
 }

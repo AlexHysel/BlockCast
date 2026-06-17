@@ -15,7 +15,7 @@ class Utils
         return a.X * b.Z - a.Z * b.X;
     }
 
-    public static bool IsPointInTriangle(Vector3 a, Vector3 b, Vector3 c, Vector3 point)
+    public static bool IsPointInTriangleXZ(Vector3 a, Vector3 b, Vector3 c, Vector3 point)
     {
         float ab = SignedArea(a, b, point);
         float bc = SignedArea(b, c, point);

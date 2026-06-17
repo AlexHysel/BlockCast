@@ -21,7 +21,7 @@ rootCommand.SetAction(parseResult =>
     var output = parseResult.GetValue(outputArg);
 
     PrintHeader();
-    var voxelizer = new RayTracingVoxelizer(new VoxelizerOptions());
+    var voxelizer = new DominantAxisCpuVoxelizer(new VoxelizerOptions());
     string obj = File.ReadAllText(input.FullName);
     AnsiConsole.Progress().Start(ctx =>
     {
