@@ -30,24 +30,23 @@ public class RayTracingVoxelizer(VoxelizerOptions options): Voxelizer(options)
                     if (Utils.IsPointInTriangleXZ(faceA, faceB, faceC, point))
                     {
                         float areaABC = Utils.SignedArea(faceB, faceC, faceA);
-                        if (areaABC != 0)
+                        if (Math.Abs(areaABC) > 0.0001)
                         {
                             float weightC = Utils.SignedArea(faceB, point, faceA) / areaABC;
                             float weightB = Utils.SignedArea(point, faceC, faceA) / areaABC;
                             float weightA = Utils.SignedArea(faceC, point, faceB) / areaABC;
                             float intersection = weightA * faceA.Y + weightB * faceB.Y + weightC * faceC.Y;
-                            intersection = (float) Math.Round(intersection);
                             intersectionsY.Add(intersection);
                         }
                     }
                 }
-                intersectionsY = intersectionsY.Order().Distinct().Reverse().ToList();
+                intersectionsY = intersectionsY.Order().Distinct().ToList();
                 if (intersectionsY.Count == 0) continue;
                 for (int i1 = intersectionsY.Count - 1; i1 >= 1; i1 -= 2)
                 {
-                    for (float y = intersectionsY[i1]; y < intersectionsY[i1 - 1]; y++)
+                    for (float y = intersectionsY[i1]; y > intersectionsY[i1 - 1]; y--)
                     {
-                        region.AddBlock(x, (int) y, z, new Block("minecraft:stone"));
+                        region.AddBlock(x, (int) Math.Round(y), z, new Block("minecraft:stone"));
                     }
                 }
             }
